@@ -24,7 +24,26 @@ function type() {
         setTimeout(type, 100);
     }
 }
-document.addEventListener("DOMContentLoaded", type);
+document.addEventListener("DOMContentLoaded", function() {
+    type();
+
+    // Hamburger Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    navLinks.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+        });
+    });
+});
 
 // Fade-in Animation Observer
 const observer = new IntersectionObserver((entries) => {
