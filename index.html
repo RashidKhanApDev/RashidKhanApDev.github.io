@@ -19,11 +19,13 @@
     <meta property="twitter:url" content="https://rashidkhanapdev.github.io/">
     <meta property="twitter:title" content="Rashid Khan Ap | Full-Stack Developer">
     <meta property="twitter:description" content="Portfolio of Rashid Khan Ap, a passionate Full-Stack Developer specializing in Python, FastAPI, and Django.">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dist/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Magnetic Custom Cursor -->
+    <div id="custom-cursor"></div>
 
 
 
@@ -75,18 +77,15 @@
                 </div>
                 <span class="terminal-title">rashid@jawan:~</span>
             </div>
-            <div class="terminal-body">
-                <p><span class="prompt">$</span> cat about.txt</p>
-                <p class="terminal-output">Full-Stack Developer with a passion for building secure, scalable, and production-grade web applications. Specialized in Python ecosystems (FastAPI, Django) with deep knowledge of cryptography, CI/CD pipelines, and DevSecOps.</p>
-                <p><span class="prompt">$</span> cat skills.json | jq '.languages'</p>
-                <p class="terminal-output">["Python", "JavaScript", "HTML5", "CSS3", "SQL", "Bash"]</p>
-                <p><span class="prompt">$</span> cat skills.json | jq '.frameworks'</p>
-                <p class="terminal-output">["FastAPI", "Django", "Node.js", "Bootstrap"]</p>
-                <p><span class="prompt">$</span> cat skills.json | jq '.tools'</p>
-                <p class="terminal-output">["Git", "GitHub Actions", "Docker", "Linux", "FFmpeg", "VS Code"]</p>
-                <p><span class="prompt">$</span> echo $MOTTO</p>
-                <p class="terminal-output motto">"Code is poetry written in logic."</p>
-                <p><span class="prompt">$</span> <span class="cursor-blink">_</span></p>
+            <div class="terminal-body" id="terminal-body">
+                <div class="terminal-history" id="terminal-history">
+                    <p><span class="prompt">$</span> cat about.txt</p>
+                    <p class="terminal-output">Full-Stack Developer with a passion for building secure, scalable, and production-grade web applications. Specialized in Python ecosystems (FastAPI, Django) with deep knowledge of cryptography, CI/CD pipelines, and DevSecOps.</p>
+                </div>
+                <div class="terminal-input-line">
+                    <span class="prompt">$</span>
+                    <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" autofocus placeholder="Type 'help' for commands...">
+                </div>
             </div>
         </div>
     </section>
@@ -252,8 +251,8 @@
         <i class="fas fa-chevron-up"></i>
     </button>
 
-    <script src="sounds.js"></script>
-    <script src="space.js"></script>
-    <script src="app.js"></script>
+    <script src="dist/sounds.js"></script>
+    <script src="dist/space.js"></script>
+    <script type="module" src="dist/app.js"></script>
 </body>
 </html>

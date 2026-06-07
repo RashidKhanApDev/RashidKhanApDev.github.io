@@ -45,6 +45,8 @@
     });
 
     class Star {
+        x!: number; y!: number; z!: number; size!: number;
+        baseOpacity!: number; twinkleSpeed!: number; twinklePhase!: number; color!: string;
         constructor() {
             this.reset();
         }
@@ -81,7 +83,9 @@
     }
 
     class Nebula {
-        constructor(color) {
+        x: number; y: number; radius: number; color: string;
+        pulseSpeed: number; pulsePhase: number;
+        constructor(color: string) {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
             this.radius = Math.random() * 300 + 200;
@@ -106,7 +110,9 @@
     }
 
     class OrbitalRing {
-        constructor(rx, ry, tilt, speedMultiplier, color) {
+        rx: number; ry: number; tilt: number; speedMultiplier: number;
+        color: string; particles: any[];
+        constructor(rx: number, ry: number, tilt: number, speedMultiplier: number, color: string) {
             this.rx = rx; // X radius
             this.ry = ry; // Y radius
             this.tilt = tilt; // Rotation angle
@@ -168,6 +174,8 @@
     }
 
     class ShootingStar {
+        x: number; y: number; length: number; speed: number;
+        angle: number; opacity: number; decay: number; active: boolean;
         constructor() {
             this.x = Math.random() * width;
             this.y = -50;
