@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const duration = 1800;
         const startTime = performance.now();
         let completionSoundPlayed = false;
+        let lastTickProgress = 0;
 
         function updateProgress(currentTime) {
             const elapsed = currentTime - startTime;
@@ -88,6 +89,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
             loaderProgress.style.width = progress + '%';
             loaderPercent.textContent = Math.floor(progress) + '%';
+
+            // Play the premium typing sound (as data ticks) every 5%
+            if (progress - lastTickProgress >= 5 && progress < 100) {
+                lastTickProgress = progress;
+                if (window.playTypeSound) {
+                    try { window.playTypeSound(); } catch (e) {}
+                }
+            }
 
             if (progress >= 100 && !completionSoundPlayed) {
                 completionSoundPlayed = true;
