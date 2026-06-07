@@ -72,14 +72,10 @@ document.addEventListener("DOMContentLoaded", function() {
         tapText.style.display = 'none';
         loaderUi.style.display = 'block';
 
-        // Play premium boot sound (Guaranteed to work because it's triggered by user interaction)
-        if (window.playBootSound) {
-            try { window.playBootSound(); } catch (e) {}
-        }
-
-        // Animate progress 0 to 100% over 1.8 seconds (matches sound completion chord)
+        // Animate progress 0 to 100% over 1.8 seconds
         const duration = 1800;
         const startTime = performance.now();
+        let completionSoundPlayed = false;
 
         function updateProgress(currentTime) {
             const elapsed = currentTime - startTime;
@@ -89,6 +85,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
             loaderProgress.style.width = progress + '%';
             loaderPercent.textContent = Math.floor(progress) + '%';
+
+            if (progress >= 100 && !completionSoundPlayed) {
+                completionSoundPlayed = true;
+                // Play the 1st premium sound created (the crisp pop/click) as the completion ping
+                if (window.playClickSound) {
+                    try { window.playClickSound(); } catch (e) {}
+                }
+            }
 
             if (progress < 100) {
                 requestAnimationFrame(updateProgress);
