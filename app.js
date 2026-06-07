@@ -68,69 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // ==================== PRELOADER & BOOT SEQUENCE ====================
-    const preloader = document.getElementById('preloader');
-    const tapText = document.getElementById('tap-text');
-    const loaderUi = document.getElementById('loader-ui');
-    const loaderProgress = document.getElementById('loader-progress');
-    const loaderPercent = document.getElementById('loader-percent');
 
-    let bootStarted = false;
-
-    function startBootSequence() {
-        if (bootStarted) return;
-        bootStarted = true;
-
-        // Hide tap text, show loader UI
-        tapText.style.display = 'none';
-        loaderUi.style.display = 'block';
-
-        // Animate progress 0 to 100% over 1.8 seconds
-        const duration = 1800;
-        const startTime = performance.now();
-        let completionSoundPlayed = false;
-        let lastTickProgress = 0;
-
-        function updateProgress(currentTime) {
-            const elapsed = currentTime - startTime;
-            let progress = (elapsed / duration) * 100;
-
-            if (progress > 100) progress = 100;
-
-            loaderProgress.style.width = progress + '%';
-            loaderPercent.textContent = Math.floor(progress) + '%';
-
-            // Play the premium typing sound (as data ticks) every 5%
-            if (progress - lastTickProgress >= 5 && progress < 100) {
-                lastTickProgress = progress;
-                if (window.playTypeSound) {
-                    try { window.playTypeSound(); } catch (e) {}
-                }
-            }
-
-            if (progress >= 100 && !completionSoundPlayed) {
-                completionSoundPlayed = true;
-                if (window.playClickSound) {
-                    try { window.playClickSound(); } catch (e) {}
-                }
-            }
-
-            if (progress < 100) {
-                requestAnimationFrame(updateProgress);
-            } else {
-                // Done loading, wait a tiny bit then hide preloader
-                setTimeout(() => {
-                    preloader.classList.add('hidden');
-                }, 400);
-            }
-        }
-
-        requestAnimationFrame(updateProgress);
-    }
-
-    // Wait for any click or tap anywhere on the screen to start
-    document.addEventListener('click', startBootSequence, { once: true });
-    document.addEventListener('touchstart', startBootSequence, { once: true });
 
     // ==================== SCROLL PROGRESS BAR ====================
     window.addEventListener('scroll', function() {
