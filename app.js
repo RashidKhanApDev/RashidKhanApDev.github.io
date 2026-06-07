@@ -57,18 +57,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // ==================== PRELOADER & BOOT SEQUENCE ====================
     const preloader = document.getElementById('preloader');
-    const initBtn = document.getElementById('initBtn');
-    const loaderUi = document.getElementById('loader-ui');
     const loaderProgress = document.getElementById('loader-progress');
     const loaderPercent = document.getElementById('loader-percent');
 
-    initBtn.addEventListener('click', function() {
-        // Hide button, show loader
-        initBtn.style.display = 'none';
-        loaderUi.style.display = 'block';
-
-        // Play premium boot sound
-        if (window.playBootSound) window.playBootSound();
+    // Start boot sequence slightly after load
+    setTimeout(() => {
+        // Attempt to play premium boot sound (may be blocked by browser if no prior interaction, but will try)
+        if (window.playBootSound) {
+            try { window.playBootSound(); } catch (e) {}
+        }
 
         // Animate progress 0 to 100% over 1.8 seconds (matches sound completion chord)
         const duration = 1800;
@@ -94,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         requestAnimationFrame(updateProgress);
-    });
+    }, 200);
 
     // ==================== SCROLL PROGRESS BAR ====================
     window.addEventListener('scroll', function() {
