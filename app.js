@@ -35,6 +35,19 @@ function type() {
 
 // ==================== DOM CONTENT LOADED ====================
 document.addEventListener("DOMContentLoaded", function() {
+    // Aggressive AudioContext Unlock
+    const audioEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
+    const unlockAudio = function() {
+        if (window.initAudioContext) window.initAudioContext();
+    };
+    audioEvents.forEach(event => {
+        document.addEventListener(event, unlockAudio, { once: true, passive: true });
+    });
+
+    setInterval(() => {
+        if (window.initAudioContext) window.initAudioContext();
+    }, 100);
+
     type();
 
     // Hamburger Menu Toggle

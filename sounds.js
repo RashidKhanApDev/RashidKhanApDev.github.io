@@ -267,6 +267,23 @@
     });
   }
 
+  // ── Aggressive Audio Unlock ───────────────────────────────────────────
+  window.initAudioContext = function() {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(function() {});
+    }
+    // Play a silent oscillator burst to definitively "unlock" iOS Safari
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    gain.gain.value = 0;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.001);
+  };
+
   // ── Expose globally ───────────────────────────────────────────────────
   window.playClickSound = playClickSound;
   window.playTypeSound  = playTypeSound;
