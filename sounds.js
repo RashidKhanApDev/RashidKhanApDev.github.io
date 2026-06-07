@@ -192,8 +192,84 @@
     };
   }
 
+  // ── playBootSound ─────────────────────────────────────────────────────
+  /**
+   * Premium Boot / Initialization Sound.
+   *
+   * Design notes:
+   *   • Rising sine sweep for "booting" effect
+   *   • Random high-frequency data "ticks"
+   *   • Final chord for success/completion
+   */
+  function playBootSound() {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+
+    var now = ctx.currentTime;
+    var masterGain = ctx.createGain();
+    masterGain.gain.value = 0.2;
+    masterGain.connect(ctx.destination);
+
+    // 1. Rising Sweep
+    var sweepOsc = ctx.createOscillator();
+    var sweepGain = ctx.createGain();
+    sweepOsc.type = 'sine';
+    sweepOsc.frequency.setValueAtTime(200, now);
+    sweepOsc.frequency.exponentialRampToValueAtTime(800, now + 1.5);
+    
+    sweepGain.gain.setValueAtTime(0, now);
+    sweepGain.gain.linearRampToValueAtTime(0.05, now + 0.2);
+    sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    
+    sweepOsc.connect(sweepGain);
+    sweepGain.connect(masterGain);
+    sweepOsc.start(now);
+    sweepOsc.stop(now + 1.5);
+
+    // 2. Data processing ticks
+    for (let i = 0; i < 15; i++) {
+      var timeOffset = now + Math.random() * 1.5;
+      var tickOsc = ctx.createOscillator();
+      var tickGain = ctx.createGain();
+      tickOsc.type = 'square';
+      tickOsc.frequency.value = 2000 + Math.random() * 3000;
+      
+      tickGain.gain.setValueAtTime(0, timeOffset);
+      tickGain.gain.linearRampToValueAtTime(0.01, timeOffset + 0.001);
+      tickGain.gain.exponentialRampToValueAtTime(0.001, timeOffset + 0.03);
+      
+      tickOsc.connect(tickGain);
+      tickGain.connect(masterGain);
+      tickOsc.start(timeOffset);
+      tickOsc.stop(timeOffset + 0.04);
+    }
+
+    // 3. Completion Chord
+    var dingTime = now + 1.8;
+    var chordFreqs = [523.25, 659.25, 783.99, 1046.50];
+
+    chordFreqs.forEach((freq, index) => {
+      var dingOsc = ctx.createOscillator();
+      var dingGain = ctx.createGain();
+      dingOsc.type = 'sine';
+      dingOsc.frequency.value = freq;
+      
+      var stagger = dingTime + (index * 0.05);
+      
+      dingGain.gain.setValueAtTime(0, stagger);
+      dingGain.gain.linearRampToValueAtTime(0.04, stagger + 0.02);
+      dingGain.gain.exponentialRampToValueAtTime(0.001, stagger + 1.5);
+      
+      dingOsc.connect(dingGain);
+      dingGain.connect(masterGain);
+      dingOsc.start(stagger);
+      dingOsc.stop(stagger + 1.5);
+    });
+  }
+
   // ── Expose globally ───────────────────────────────────────────────────
   window.playClickSound = playClickSound;
   window.playTypeSound  = playTypeSound;
+  window.playBootSound  = playBootSound;
 
 })();

@@ -55,11 +55,46 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // ==================== PRELOADER ====================
+    // ==================== PRELOADER & BOOT SEQUENCE ====================
     const preloader = document.getElementById('preloader');
-    setTimeout(function() {
-        preloader.classList.add('hidden');
-    }, 2200);
+    const initBtn = document.getElementById('initBtn');
+    const loaderUi = document.getElementById('loader-ui');
+    const loaderProgress = document.getElementById('loader-progress');
+    const loaderPercent = document.getElementById('loader-percent');
+
+    initBtn.addEventListener('click', function() {
+        // Hide button, show loader
+        initBtn.style.display = 'none';
+        loaderUi.style.display = 'block';
+
+        // Play premium boot sound
+        if (window.playBootSound) window.playBootSound();
+
+        // Animate progress 0 to 100% over 1.8 seconds (matches sound completion chord)
+        const duration = 1800;
+        const startTime = performance.now();
+
+        function updateProgress(currentTime) {
+            const elapsed = currentTime - startTime;
+            let progress = (elapsed / duration) * 100;
+
+            if (progress > 100) progress = 100;
+
+            loaderProgress.style.width = progress + '%';
+            loaderPercent.textContent = Math.floor(progress) + '%';
+
+            if (progress < 100) {
+                requestAnimationFrame(updateProgress);
+            } else {
+                // Done loading, wait a tiny bit then hide preloader
+                setTimeout(() => {
+                    preloader.classList.add('hidden');
+                }, 400);
+            }
+        }
+
+        requestAnimationFrame(updateProgress);
+    });
 
     // ==================== SCROLL PROGRESS BAR ====================
     window.addEventListener('scroll', function() {
