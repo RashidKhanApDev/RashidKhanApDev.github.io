@@ -57,21 +57,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // ==================== PRELOADER & BOOT SEQUENCE ====================
     const preloader = document.getElementById('preloader');
-    const tapText = document.getElementById('tap-text');
-    const loaderUi = document.getElementById('loader-ui');
     const loaderProgress = document.getElementById('loader-progress');
     const loaderPercent = document.getElementById('loader-percent');
 
-    let bootStarted = false;
-
-    function startBootSequence() {
-        if (bootStarted) return;
-        bootStarted = true;
-
-        // Hide tap text, show loader UI
-        tapText.style.display = 'none';
-        loaderUi.style.display = 'block';
-
+    // Start boot sequence slightly after load automatically
+    setTimeout(() => {
         // Animate progress 0 to 100% over 1.8 seconds
         const duration = 1800;
         const startTime = performance.now();
@@ -88,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (progress >= 100 && !completionSoundPlayed) {
                 completionSoundPlayed = true;
-                // Play the 1st premium sound created (the crisp pop/click) as the completion ping
+                // Attempt to play completion sound. (May be blocked by browser autoplay policy)
                 if (window.playClickSound) {
                     try { window.playClickSound(); } catch (e) {}
                 }
@@ -105,11 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         requestAnimationFrame(updateProgress);
-    }
-
-    // Wait for any click or tap anywhere on the screen to start
-    document.addEventListener('click', startBootSequence, { once: true });
-    document.addEventListener('touchstart', startBootSequence, { once: true });
+    }, 200);
 
     // ==================== SCROLL PROGRESS BAR ====================
     window.addEventListener('scroll', function() {
