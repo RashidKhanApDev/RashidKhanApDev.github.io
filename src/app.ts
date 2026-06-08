@@ -1,5 +1,6 @@
 import './sounds.ts';
 import { initSpaceCanvas } from './space.ts';
+import { initKillSwitch } from './killswitch.ts';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 
@@ -54,6 +55,7 @@ function type() {
 // ==================== DOM CONTENT LOADED ====================
 document.addEventListener("DOMContentLoaded", function() {
     initSpaceCanvas();
+    initKillSwitch();
 
     // Aggressive AudioContext Unlock
     const audioEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
