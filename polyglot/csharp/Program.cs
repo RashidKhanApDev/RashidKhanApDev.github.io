@@ -13,10 +13,15 @@ namespace DataGenerator {
             
             string jsonString = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             
-            string outputPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName, "dist", "data.json");
+            var currentDirParent = Directory.GetParent(Directory.GetCurrentDirectory());
+            var rootDir = currentDirParent?.Parent?.FullName ?? Directory.GetCurrentDirectory();
+            string outputPath = Path.Combine(rootDir, "dist", "data.json");
             
             // Ensure dist directory exists
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+            var dirName = Path.GetDirectoryName(outputPath);
+            if (dirName != null) {
+                Directory.CreateDirectory(dirName);
+            }
             
             File.WriteAllText(outputPath, jsonString);
             

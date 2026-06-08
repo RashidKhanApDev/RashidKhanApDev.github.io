@@ -12,6 +12,11 @@ let cometMaterial: THREE.MeshBasicMaterial;
 let comet: THREE.Mesh;
 let skillMeshes: THREE.Mesh[] = [];
 
+// Event listeners for cleanup
+let onMouseMoveGlobal: ((event: MouseEvent) => void) | null = null;
+let onMouseMoveRaycaster: ((event: MouseEvent) => void) | null = null;
+let onResizeGlobal: (() => void) | null = null;
+
 export function initSpaceCanvas() {
     if (isInitialized) return;
     
@@ -154,10 +159,11 @@ export function initSpaceCanvas() {
     const raycaster = new THREE.Raycaster();
     const mouseVec = new THREE.Vector2();
 
-    document.addEventListener('mousemove', (event) => {
+    onMouseMoveGlobal = (event: MouseEvent) => {
         mouseX = event.clientX / window.innerWidth - 0.5;
         mouseY = event.clientY / window.innerHeight - 0.5;
-    });
+    };
+    document.addEventListener('mousemove', onMouseMoveGlobal);
 
     const clock = new THREE.Clock();
     
@@ -234,18 +240,20 @@ export function initSpaceCanvas() {
     };
 
     // Update mouse vector for raycaster
-    document.addEventListener('mousemove', (event) => {
+    onMouseMoveRaycaster = (event: MouseEvent) => {
         mouseVec.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouseVec.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
+    };
+    document.addEventListener('mousemove', onMouseMoveRaycaster);
 
     tick();
 
-    window.addEventListener('resize', () => {
+    onResizeGlobal = () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    };
+    window.addEventListener('resize', onResizeGlobal);
 
     // 4. Cinematic Smooth Page Transitions (Scroll zoom)
     if ((window as any).gsap && (window as any).ScrollTrigger) {
@@ -298,6 +306,21 @@ export function disposeSpaceCanvas() {
     
     if (renderer) {
         renderer.dispose();
+    }
+    
+    if (onMouseMoveGlobal) {
+        document.removeEventListener('mousemove', onMouseMoveGlobal);
+        onMouseMoveGlobal = null;
+    }
+    
+    if (onMouseMoveRaycaster) {
+        document.removeEventListener('mousemove', onMouseMoveRaycaster);
+        onMouseMoveRaycaster = null;
+    }
+    
+    if (onResizeGlobal) {
+        window.removeEventListener('resize', onResizeGlobal);
+        onResizeGlobal = null;
     }
     
     isInitialized = false;

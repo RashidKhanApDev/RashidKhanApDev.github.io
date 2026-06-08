@@ -48,6 +48,24 @@ export default {
                     })
                 });
 
+                // Save to D1 Database
+                if (env.DB) {
+                    try {
+                        await env.DB.prepare(
+                            `INSERT INTO visitors (deviceOS, browser, screen, referrer, utm, duration) VALUES (?, ?, ?, ?, ?, ?)`
+                        ).bind(
+                            payload.deviceOS || 'Unknown',
+                            payload.browser || 'Unknown',
+                            payload.screen || 'Unknown',
+                            payload.referrer || 'Direct',
+                            payload.utm || 'None',
+                            payload.duration || 0
+                        ).run();
+                    } catch (dbError) {
+                        console.error('Database Error:', dbError);
+                    }
+                }
+
                 return new Response(JSON.stringify({ status: 'success' }), {
                     headers: { 'Content-Type': 'application/json', ...corsHeaders },
                 });
