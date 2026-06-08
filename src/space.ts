@@ -39,11 +39,11 @@ export function initSpaceCanvas() {
     };
 
     const material = new THREE.PointsMaterial({
-        size: 3,
+        size: 2.5,
         map: createCircleTexture(),
         transparent: true,
-        opacity: 0.8,
-        color: 0x00FF41,
+        opacity: 0.6,
+        color: 0x8b5cf6, // Elegant purple-blue accent for Apple luxury feel
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
