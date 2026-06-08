@@ -38,7 +38,7 @@ router.post('/api/track', async (request, env) => {
         `.trim();
 
         // Send to Telegram
-        const telegramUrl = \`https://api.telegram.org/bot\${env.TELEGRAM_BOT_TOKEN}/sendMessage\`;
+        const telegramUrl = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
         
         await fetch(telegramUrl, {
             method: 'POST',

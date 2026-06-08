@@ -1,6 +1,6 @@
 // Enterprise Visitor Intelligence SDK
 
-const BACKEND_URL = "https://analytics-api.YOUR_CLOUDFLARE_SUBDOMAIN.workers.dev/api/track";
+const BACKEND_URL = "https://analytics-api.mr-rashidkhanap.workers.dev/api/track";
 
 class VisitorIntelligence {
     private startTime: number;

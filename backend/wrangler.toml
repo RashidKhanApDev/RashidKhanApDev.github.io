@@ -6,10 +6,10 @@ compatibility_date = "2023-10-16"
 compatibility_flags = [ "nodejs_compat" ]
 
 # Bindings to D1 database for future use
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "visitor-intelligence-db"
-# database_id = "YOUR_DATABASE_ID"
+[[d1_databases]]
+binding = "DB"
+database_name = "visitor-db"
+database_id = "73d10a53-6166-49e5-a4ee-963401d267fb"
 
 [vars]
 TELEGRAM_BOT_TOKEN = "***REMOVED***"
