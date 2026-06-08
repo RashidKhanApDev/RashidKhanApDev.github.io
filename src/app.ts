@@ -371,11 +371,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else if (cmd === 'sudo') {
                     output.innerHTML = 'nice try. This incident will be reported.';
                     output.style.color = 'red';
-                } else if (cmd === 'matrix') {
-                    output.innerHTML = 'Wake up, Neo...';
-                    document.body.style.background = 'black';
-                    document.body.style.color = '#00FF41';
-                    setTimeout(() => location.reload(), 2000);
                 } else {
                     output.innerHTML = `bash: ${val}: command not found`;
                 }
@@ -408,5 +403,62 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
+
+// ==================== AUTO-GENERATED PDF RESUME ====================
+(window as any).generatePDFResume = async function() {
+    return new Promise<string>((resolve, reject) => {
+        if (!(window as any).html2pdf) {
+            reject('html2pdf library not loaded.');
+            return;
+        }
+
+        // Create a hidden, beautifully formatted CV template
+        const cvContainer = document.createElement('div');
+        cvContainer.style.padding = '40px';
+        cvContainer.style.fontFamily = 'Inter, sans-serif';
+        cvContainer.style.color = '#333';
+        cvContainer.style.background = '#fff';
+        cvContainer.innerHTML = `
+            <div style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+                <h1 style="margin: 0; font-size: 32px; color: #111;">Rashid Khan Ap</h1>
+                <p style="margin: 5px 0 0; font-size: 16px; color: #555;">Enterprise Full-Stack Developer</p>
+                <p style="margin: 5px 0 0; font-size: 14px; color: #777;">Python • FastAPI • Django • TypeScript • Go</p>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <h2 style="font-size: 20px; color: #222; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Experience & Skills</h2>
+                <ul style="line-height: 1.6; color: #444; font-size: 14px;">
+                    <li><strong>Languages:</strong> Python, TypeScript, Rust, Go, C#, C++, Dart</li>
+                    <li><strong>Frameworks:</strong> FastAPI, Django, React, WebGL (Three.js), GSAP</li>
+                    <li><strong>Architecture:</strong> Microservices, Event-Driven, Polyglot Orchestration</li>
+                </ul>
+            </div>
+            <div>
+                <h2 style="font-size: 20px; color: #222; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Projects</h2>
+                <ul style="line-height: 1.6; color: #444; font-size: 14px;">
+                    <li><strong>Enterprise Web Apps:</strong> Secure, scalable REST & GraphQL backends.</li>
+                    <li><strong>Polyglot Microservices:</strong> Interoperable services across 13 languages.</li>
+                    <li><strong>3D Data Visualization:</strong> WebGL accelerated interactive data tools.</li>
+                </ul>
+            </div>
+            <p style="margin-top: 40px; text-align: center; font-size: 12px; color: #999;">
+                Generated dynamically via RashidKhanApDev Terminal
+            </p>
+        `;
+
+        const opt = {
+            margin:       1,
+            filename:     'Rashid_Khan_Ap_Resume.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        (window as any).html2pdf().set(opt).from(cvContainer).save().then(() => {
+            resolve('PDF generated and downloading successfully.');
+        }).catch((err: any) => {
+            reject(err);
+        });
+    });
+};
 
 

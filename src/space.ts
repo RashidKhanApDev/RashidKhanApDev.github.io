@@ -246,6 +246,23 @@ export function initSpaceCanvas() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // 4. Cinematic Smooth Page Transitions (Scroll zoom)
+    if ((window as any).gsap && (window as any).ScrollTrigger) {
+        const gsap = (window as any).gsap;
+        gsap.registerPlugin((window as any).ScrollTrigger);
+        
+        gsap.to(camera.position, {
+            z: 50, // zoom in
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1.5 // smooth catching up
+            }
+        });
+    }
 }
 
 export function disposeSpaceCanvas() {
