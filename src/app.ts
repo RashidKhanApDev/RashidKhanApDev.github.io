@@ -29,7 +29,8 @@ function type() {
     } else {
         letter = currentText.slice(0, ++index);
         // Play continuous typing sound if tab is active (respecting autoplay/hidden policy)
-        if (!document.hidden && window.playTypeSound) {
+        // Only play for 2 full cycles (texts.length * 2 phrases)
+        if (count < texts.length * 2 && !document.hidden && window.playTypeSound) {
             window.playTypeSound();
         }
     }
