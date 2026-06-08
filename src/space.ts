@@ -1,19 +1,35 @@
 import * as THREE from 'three';
 
+let isInitialized = false;
+let animationId = 0;
+let scene: THREE.Scene;
+let renderer: THREE.WebGLRenderer;
+let geometry: THREE.BufferGeometry;
+let material: THREE.PointsMaterial;
+let particlesMesh: THREE.Points;
+let cometGeometry: THREE.CylinderGeometry;
+let cometMaterial: THREE.MeshBasicMaterial;
+let comet: THREE.Mesh;
+let skillMeshes: THREE.Mesh[] = [];
+
 export function initSpaceCanvas() {
+    if (isInitialized) return;
+    
     const canvas = document.getElementById('space-canvas') as HTMLCanvasElement;
     if (!canvas) return;
+    
+    isInitialized = true;
 
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 400;
 
     // Create 3D particle system for realistic space
-    const geometry = new THREE.BufferGeometry();
+    geometry = new THREE.BufferGeometry();
     const particlesCount = 4000;
     const posArray = new Float32Array(particlesCount * 3);
 
@@ -43,7 +59,7 @@ export function initSpaceCanvas() {
         return new THREE.CanvasTexture(canvas);
     };
 
-    const material = new THREE.PointsMaterial({
+    material = new THREE.PointsMaterial({
         size: 2.0,
         map: createStarTexture(),
         transparent: true,
@@ -53,19 +69,19 @@ export function initSpaceCanvas() {
         depthWrite: false
     });
 
-    const particlesMesh = new THREE.Points(geometry, material);
+    particlesMesh = new THREE.Points(geometry, material);
     scene.add(particlesMesh);
 
     // Create a Comet (Shooting Star)
-    const cometGeometry = new THREE.CylinderGeometry(0.8, 0.0, 150, 8);
-    const cometMaterial = new THREE.MeshBasicMaterial({
+    cometGeometry = new THREE.CylinderGeometry(0.8, 0.0, 150, 8);
+    cometMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
         opacity: 0.9,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
-    const comet = new THREE.Mesh(cometGeometry, cometMaterial);
+    comet = new THREE.Mesh(cometGeometry, cometMaterial);
     scene.add(comet);
     
     // Comet Velocity
@@ -84,8 +100,59 @@ export function initSpaceCanvas() {
     };
     resetComet();
 
+    // 3. Floating 3D Skill Icons (Interactive)
+    const skills = [
+        { name: 'Python', color: '#3776AB' },
+        { name: 'Rust', color: '#DEA584' },
+        { name: 'Go', color: '#00ADD8' },
+        { name: 'FastAPI', color: '#009688' }
+    ];
+    
+    skills.forEach((skill, idx) => {
+        // Create text texture
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        const ctx = c.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = skill.color;
+            ctx.beginPath();
+            ctx.arc(128, 128, 120, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 40px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(skill.name, 128, 128);
+        }
+        
+        const tex = new THREE.CanvasTexture(c);
+        const geo = new THREE.PlaneGeometry(30, 30);
+        const mat = new THREE.MeshBasicMaterial({
+            map: tex,
+            transparent: true,
+            opacity: 0.8,
+            side: THREE.DoubleSide,
+            depthWrite: false
+        });
+        
+        const mesh = new THREE.Mesh(geo, mat);
+        // Spread them out randomly
+        mesh.position.set(
+            (Math.random() - 0.5) * 400,
+            (Math.random() - 0.5) * 400,
+            (Math.random() - 0.5) * 200 - 100
+        );
+        scene.add(mesh);
+        skillMeshes.push(mesh);
+    });
+
     let mouseX = 0;
     let mouseY = 0;
+    
+    // Raycaster for interactive hover
+    const raycaster = new THREE.Raycaster();
+    const mouseVec = new THREE.Vector2();
 
     document.addEventListener('mousemove', (event) => {
         mouseX = event.clientX / window.innerWidth - 0.5;
@@ -93,9 +160,30 @@ export function initSpaceCanvas() {
     });
 
     const clock = new THREE.Clock();
+    
+    // For Audio Visualizer
+    const dataArray = new Uint8Array(128); // Will hold frequency data
 
     const tick = () => {
         const elapsedTime = clock.getElapsedTime();
+        
+        // 1. Audio Visualizer Effect
+        let audioScale = 1.0;
+        if (window.getAudioAnalyser) {
+            const analyser = window.getAudioAnalyser();
+            if (analyser) {
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                const avg = sum / dataArray.length;
+                // Scale up when audio plays (avg > 0)
+                audioScale = 1.0 + (avg / 256.0) * 1.5;
+            }
+        }
+        
+        // Apply audio scale to particle material size and Comet scale
+        material.size = 2.0 * audioScale;
+        comet.scale.set(audioScale, audioScale, audioScale);
 
         // Realistic slow space drift instead of chaotic rotation
         particlesMesh.rotation.y = elapsedTime * 0.005;
@@ -116,10 +204,40 @@ export function initSpaceCanvas() {
         camera.position.x += (mouseX * 50 - camera.position.x) * 0.05;
         camera.position.y += (-mouseY * 50 - camera.position.y) * 0.05;
         camera.lookAt(scene.position);
+        
+        // Float and interact with skill icons
+        raycaster.setFromCamera(mouseVec, camera);
+        const intersects = raycaster.intersectObjects(skillMeshes);
+        
+        skillMeshes.forEach((mesh, idx) => {
+            // Gentle floating
+            mesh.position.y += Math.sin(elapsedTime * 2 + idx) * 0.2;
+            mesh.rotation.y = Math.sin(elapsedTime * 0.5 + idx) * 0.5;
+            
+            // Default opacity
+            (mesh.material as THREE.MeshBasicMaterial).opacity = 0.6;
+        });
+
+        // Hover effect (brighten and repel slightly)
+        if (intersects.length > 0) {
+            const hit = intersects[0].object as THREE.Mesh;
+            (hit.material as THREE.MeshBasicMaterial).opacity = 1.0;
+            hit.scale.set(1.2, 1.2, 1.2);
+            document.body.style.cursor = 'pointer';
+        } else {
+            skillMeshes.forEach(mesh => mesh.scale.set(1, 1, 1));
+            document.body.style.cursor = 'default';
+        }
 
         renderer.render(scene, camera);
-        window.requestAnimationFrame(tick);
+        animationId = window.requestAnimationFrame(tick);
     };
+
+    // Update mouse vector for raycaster
+    document.addEventListener('mousemove', (event) => {
+        mouseVec.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseVec.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
 
     tick();
 
@@ -128,4 +246,42 @@ export function initSpaceCanvas() {
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
     });
+}
+
+export function disposeSpaceCanvas() {
+    if (!isInitialized) return;
+    
+    window.cancelAnimationFrame(animationId);
+    
+    if (particlesMesh) {
+        scene.remove(particlesMesh);
+    }
+    if (geometry) geometry.dispose();
+    if (material) {
+        if (material.map) material.map.dispose();
+        material.dispose();
+    }
+    
+    if (comet) {
+        scene.remove(comet);
+    }
+    if (cometGeometry) cometGeometry.dispose();
+    if (cometMaterial) cometMaterial.dispose();
+    
+    skillMeshes.forEach(mesh => {
+        scene.remove(mesh);
+        if (mesh.geometry) mesh.geometry.dispose();
+        if (mesh.material) {
+            const mat = mesh.material as THREE.MeshBasicMaterial;
+            if (mat.map) mat.map.dispose();
+            mat.dispose();
+        }
+    });
+    skillMeshes = [];
+    
+    if (renderer) {
+        renderer.dispose();
+    }
+    
+    isInitialized = false;
 }

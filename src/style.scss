@@ -675,30 +675,6 @@ a, button, input {
   margin-bottom: 10px;
 }
 
-#custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: $cursor-size;
-  height: $cursor-size;
-  border-radius: 50%;
-  background: rgba(59, 130, 246, 0.4);
-  backdrop-filter: blur(2px);
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
-  mix-blend-mode: screen;
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.6);
-
-  &.hovering {
-    width: $cursor-hover-size;
-    height: $cursor-hover-size;
-    background: rgba(139, 92, 246, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-  }
-}
-
 
 .card {
     background: rgba(255, 255, 255, 0.03);

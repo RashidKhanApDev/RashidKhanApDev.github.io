@@ -71,6 +71,7 @@
     filter.frequency.value = 2000;
     filter.Q.value = 1.0;
     filter.connect(ctx.destination);
+    if (globalAnalyser) filter.connect(globalAnalyser);
 
     // ── Master gain envelope ──
     var masterGain = ctx.createGain();
@@ -151,6 +152,7 @@
     hpFilter.frequency.value = 600;
     hpFilter.Q.value = 0.7;
     hpFilter.connect(ctx.destination);
+    if (globalAnalyser) hpFilter.connect(globalAnalyser);
 
     // ── Gain envelope ──
     var gain = ctx.createGain();
@@ -212,6 +214,7 @@
     var masterGain = ctx.createGain();
     masterGain.gain.value = 0.2;
     masterGain.connect(ctx.destination);
+    if (globalAnalyser) masterGain.connect(globalAnalyser);
 
     // 1. Rising Sweep
     var sweepOsc = ctx.createOscillator();
@@ -286,6 +289,19 @@
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.001);
   };
+  
+  // ── Global Audio Analyser ─────────────────────────────────────────────
+  var globalAnalyser = null;
+  function getAnalyser() {
+    var ctx = getAudioContext();
+    if (!ctx) return null;
+    if (!globalAnalyser) {
+        globalAnalyser = ctx.createAnalyser();
+        globalAnalyser.fftSize = 256;
+        // Do not connect analyser to destination directly, it intercepts nodes
+    }
+    return globalAnalyser;
+  }
 
   // ── playPianoSound ─────────────────────────────────────────────────────
   /**
@@ -316,6 +332,7 @@
     filter.frequency.value = 3000;
     masterGain.connect(filter);
     filter.connect(ctx.destination);
+    if (globalAnalyser) filter.connect(globalAnalyser);
 
     // Fundamental (Sine)
     var osc1 = ctx.createOscillator();
@@ -358,5 +375,6 @@
   window.playTypeSound  = playTypeSound;
   window.playBootSound  = playBootSound;
   window.playPianoSound = playPianoSound;
+  window.getAudioAnalyser = getAnalyser;
 
 })();

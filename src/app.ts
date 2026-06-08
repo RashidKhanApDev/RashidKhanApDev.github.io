@@ -63,8 +63,11 @@ document.addEventListener("DOMContentLoaded", function() {
         document.addEventListener(event, unlockAudio, { once: true, passive: true });
     });
 
-    setInterval(() => {
-        if (window.initAudioContext) window.initAudioContext();
+    const audioInterval = setInterval(() => {
+        if (window.initAudioContext) {
+            window.initAudioContext();
+            clearInterval(audioInterval);
+        }
     }, 100);
 
     type();
@@ -307,20 +310,56 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const cmd = val.toLowerCase();
                 if (cmd === 'help') {
-                    output.innerHTML = 'Available commands: help, whoami, skills, projects, clear, sudo, execute &lt;lang&gt;<br>Supported langs: rust, go, cpp, kotlin, clojurescript, webassembly, csharp, dart';
+                    output.innerHTML = 'Available commands: help, whoami, skills, projects, clear, sudo, execute &lt;lang&gt;, download cv<br>Supported langs: rust, go, cpp, kotlin, clojurescript, webassembly, csharp, dart';
+                } else if (cmd === 'download cv') {
+                    output.innerHTML = 'Generating Premium PDF Resume... Please wait.';
+                    if (window.generatePDFResume) {
+                        try {
+                            const res = window.generatePDFResume();
+                            if (res instanceof Promise) {
+                                res.catch(e => {
+                                    output.innerHTML += '<br><span style="color:red">Error: PDF generation failed.</span>';
+                                    console.error(e);
+                                });
+                            }
+                        } catch (e) {
+                            output.innerHTML += '<br><span style="color:red">Error: PDF generation failed.</span>';
+                            console.error(e);
+                        }
+                    } else {
+                        output.innerHTML += '<br><span style="color:red">Error: PDF module not loaded.</span>';
+                    }
+                } else if (cmd === 'matrix') {
+                    document.body.className = 'theme-matrix';
+                    output.innerHTML = '<span style="color:#0f0">Wake up, Neo... The Matrix has you.</span>';
+                } else if (cmd === 'apple') {
+                    document.body.className = 'theme-apple-light';
+                    output.innerHTML = '<span style="color:#555">Think Different. Apple Light Mode enabled.</span>';
+                } else if (cmd === 'dark') {
+                    document.body.className = '';
+                    output.innerHTML = 'Restored Premium Dark Mode.';
                 } else if (cmd.startsWith('execute ')) {
                     const lang = cmd.split(' ')[1];
                     
-                    if (lang === 'dart' && window.handleTerminalDart) {
-                        output.innerHTML = window.handleTerminalDart();
-                        output.style.color = '#00B4AB';
-                    } else if (window.polyglotExecutors && window.polyglotExecutors[lang]) {
-                        output.innerHTML = window.polyglotExecutors[lang]();
-                        output.style.color = '#FFD700'; // Gold color for polyglot outputs
-                    } else {
-                        output.innerHTML = `Executor for '${lang}' not found in Polyglot engine.`;
-                        output.style.color = 'red';
-                    }
+                    const executeAsync = async () => {
+                        try {
+                            if (lang === 'dart' && window.handleTerminalDart) {
+                                const result = await window.handleTerminalDart();
+                                output.innerHTML = result;
+                                output.style.color = '#00B4AB';
+                            } else if (window.polyglotExecutors && window.polyglotExecutors[lang]) {
+                                const result = await window.polyglotExecutors[lang]();
+                                output.innerHTML = result;
+                                output.style.color = '#FFD700'; // Gold color for polyglot outputs
+                            } else {
+                                output.innerHTML = `Executor for '${lang}' not found in Polyglot engine.`;
+                                output.style.color = 'red';
+                            }
+                        } catch (err) {
+                            output.innerHTML = `<span style="color:red">Error executing '${lang}': ${err}</span>`;
+                        }
+                    };
+                    executeAsync();
                 } else if (cmd === 'whoami') {
                     output.innerHTML = 'Rashid Khan Ap - Enterprise Full-Stack Developer';
                 } else if (cmd === 'skills') {
