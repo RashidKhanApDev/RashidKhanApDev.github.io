@@ -4,4 +4,6 @@ interface Window {
   playBootSound?: () => void;
   initAudioContext?: () => void;
   webkitAudioContext: typeof AudioContext;
+  polyglotExecutors?: Record<string, () => string>;
+  handleTerminalDart?: () => string;
 }

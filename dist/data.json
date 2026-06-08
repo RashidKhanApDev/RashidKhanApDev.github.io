@@ -1,0 +1,17 @@
+{
+  "title": "Enterprise Polyglot Engine",
+  "version": "3.0.0",
+  "languages": [
+    "Rust",
+    "Go",
+    "C\u002B\u002B",
+    "Kotlin",
+    "ClojureScript",
+    "WebAssembly",
+    "C#",
+    "Dart",
+    "Python",
+    "TypeScript",
+    "SCSS"
+  ]
+}

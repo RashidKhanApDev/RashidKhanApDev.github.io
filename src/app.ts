@@ -243,7 +243,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const cmd = val.toLowerCase();
                 if (cmd === 'help') {
-                    output.innerHTML = 'Available commands: help, whoami, skills, projects, clear, sudo';
+                    output.innerHTML = 'Available commands: help, whoami, skills, projects, clear, sudo, execute &lt;lang&gt;<br>Supported langs: rust, go, cpp, kotlin, clojurescript, webassembly, csharp, dart';
+                } else if (cmd.startsWith('execute ')) {
+                    const lang = cmd.split(' ')[1];
+                    
+                    if (lang === 'dart' && window.handleTerminalDart) {
+                        output.innerHTML = window.handleTerminalDart();
+                        output.style.color = '#00B4AB';
+                    } else if (window.polyglotExecutors && window.polyglotExecutors[lang]) {
+                        output.innerHTML = window.polyglotExecutors[lang]();
+                        output.style.color = '#FFD700'; // Gold color for polyglot outputs
+                    } else {
+                        output.innerHTML = `Executor for '${lang}' not found in Polyglot engine.`;
+                        output.style.color = 'red';
+                    }
                 } else if (cmd === 'whoami') {
                     output.innerHTML = 'Rashid Khan Ap - Enterprise Full-Stack Developer';
                 } else if (cmd === 'skills') {
