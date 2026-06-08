@@ -22,34 +22,64 @@ export default {
                 const asn = request.headers.get('cf-asn') || 'Unknown ASN';
                 const userAgent = request.headers.get('user-agent') || 'Unknown Device';
                 
-                // Construct Telegram Message
-                const message = `
-🚀 **New Visitor Detected!**
-📍 **Location:** ${country}
-🌐 **IP:** ${ip}
-📡 **ASN:** ${asn}
-💻 **Device:** ${payload.deviceOS || 'Unknown'} (${payload.browser || 'Unknown'})
-📱 **Resolution:** ${payload.screen || 'Unknown'}
-🔗 **Referrer:** ${payload.referrer || 'Direct'}
-🏷️ **UTM Campaign:** ${payload.utm || 'None'}
-⏱️ **Session Duration:** ${payload.duration || 0}s
-                `.trim();
+                let message = "";
+
+                if (payload.type === 'error') {
+                    // OffSec / Red Team Error Alert Format
+                    message = `
+🚨 <b>[DEFCON-1] OFFSEC ALERT</b> 🚨
+<b>TARGET:</b> Portfolio Frontend
+<b>VECTOR:</b> ${payload.vector || 'Unknown Vector'}
+<b>SOURCE:</b> ${payload.sourceFile || 'Unknown'} (Line: ${payload.lineNumber || 0})
+<b>THREAT LEVEL:</b> CRITICAL
+<b>ATTACKER IP:</b> ${ip} [${country}]
+<b>ENVIRONMENT:</b> ${payload.deviceOS} / ${payload.browser}
+
+💻 <b>PAYLOAD (Trace):</b>
+<pre>${payload.stacktrace || payload.errorMessage || 'No trace provided'}</pre>
+                    `.trim();
+                } else {
+                    // Standard Visitor Alert Format
+                    message = `
+🚀 <b>New Visitor Detected!</b>
+📍 <b>Location:</b> ${country}
+🌐 <b>IP:</b> ${ip}
+📡 <b>ASN:</b> ${asn}
+💻 <b>Device:</b> ${payload.deviceOS || 'Unknown'} (${payload.browser || 'Unknown'})
+📱 <b>Resolution:</b> ${payload.screen || 'Unknown'}
+🔗 <b>Referrer:</b> ${payload.referrer || 'Direct'}
+🏷️ <b>UTM Campaign:</b> ${payload.utm || 'None'}
+⏱️ <b>Session Duration:</b> ${payload.duration || 0}s
+                    `.trim();
+                }
+                
+                // Message is now built dynamically above
 
                 // Send to Telegram
-                const telegramUrl = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`;
-                
-                await fetch(telegramUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: env.TELEGRAM_CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                });
+                if (env.TELEGRAM_BOT_TOKEN) {
+                    const cleanToken = env.TELEGRAM_BOT_TOKEN.trim();
+                    const telegramUrl = `https://api.telegram.org/bot${cleanToken}/sendMessage`;
+                    
+                    const tgResponse = await fetch(telegramUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: env.TELEGRAM_CHAT_ID,
+                            text: message,
+                            parse_mode: 'HTML'
+                        })
+                    });
 
-                // Save to D1 Database
-                if (env.DB) {
+                    if (!tgResponse.ok) {
+                        const tgError = await tgResponse.text();
+                        console.error('Telegram API Error:', tgError);
+                    }
+                } else {
+                    console.error('TELEGRAM_BOT_TOKEN is missing in environment.');
+                }
+
+                // Save to D1 Database only if it's a regular visitor
+                if (env.DB && payload.type !== 'error') {
                     try {
                         await env.DB.prepare(
                             `INSERT INTO visitors (deviceOS, browser, screen, referrer, utm, duration) VALUES (?, ?, ?, ?, ?, ?)`

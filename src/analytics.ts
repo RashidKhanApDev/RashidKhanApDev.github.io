@@ -91,3 +91,81 @@ class VisitorIntelligence {
 if (typeof window !== 'undefined') {
     new VisitorIntelligence();
 }
+
+class OffensiveSecurityMonitor {
+    constructor() {
+        this.hijackGlobalErrors();
+        this.hijackUnhandledRejections();
+        this.hijackConsoleErrors();
+    }
+
+    private hijackGlobalErrors() {
+        window.addEventListener('error', (event) => {
+            this.dispatchThreatIntel('Runtime Exception', event.message, event.filename, event.lineno, event.error?.stack);
+        });
+    }
+
+    private hijackUnhandledRejections() {
+        window.addEventListener('unhandledrejection', (event) => {
+            this.dispatchThreatIntel('Unhandled Promise Rejection', String(event.reason), window.location.href, 0, event.reason?.stack);
+        });
+    }
+
+    private hijackConsoleErrors() {
+        const originalConsoleError = console.error;
+        console.error = (...args) => {
+            originalConsoleError(...args);
+            const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+            this.dispatchThreatIntel('Console Error Triggered', message, window.location.href, 0, new Error().stack);
+        };
+    }
+
+    private async dispatchThreatIntel(vector: string, message: string, source: string = 'Unknown', line: number = 0, stacktrace: string = 'N/A') {
+        try {
+            const payload = {
+                type: 'error',
+                deviceOS: this.getDeviceOS(),
+                browser: this.getBrowser(),
+                url: window.location.href,
+                vector: vector,
+                errorMessage: message,
+                sourceFile: source,
+                lineNumber: line,
+                stacktrace: stacktrace ? stacktrace.substring(0, 500) : 'N/A' // Truncate to prevent payload limits
+            };
+
+            await fetch(BACKEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } catch (e) {
+            // Failsafe to avoid recursive error loops
+            const originalConsoleError = console.warn;
+            originalConsoleError('Threat Intel Dispatch Failed', e);
+        }
+    }
+
+    private getDeviceOS() {
+        const userAgent = navigator.userAgent;
+        if (/windows/i.test(userAgent)) return 'Windows';
+        if (/mac/i.test(userAgent)) return 'MacOS';
+        if (/linux/i.test(userAgent)) return 'Linux';
+        if (/android/i.test(userAgent)) return 'Android';
+        if (/ios|iphone|ipad/i.test(userAgent)) return 'iOS';
+        return 'Unknown';
+    }
+
+    private getBrowser() {
+        const userAgent = navigator.userAgent;
+        if (/chrome|crios/i.test(userAgent) && !/edge|opr\//i.test(userAgent)) return 'Chrome';
+        if (/firefox|fxios/i.test(userAgent)) return 'Firefox';
+        if (/safari/i.test(userAgent) && !/chrome|crios/i.test(userAgent)) return 'Safari';
+        if (/edge/i.test(userAgent)) return 'Edge';
+        return 'Other';
+    }
+}
+
+if (typeof window !== 'undefined') {
+    new OffensiveSecurityMonitor();
+}
