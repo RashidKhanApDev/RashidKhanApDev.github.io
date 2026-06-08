@@ -4,10 +4,10 @@
   "description": "<div align=\"center\">   <img src=\"https://img.shields.io/github/license/RashidKhanApDev/RashidKhanApDev.github.io?style=for-the-badge&color=blue\" alt=\"License\"/>   <img src=\"https://img.shields.io/github/deployments/RashidKhanApDev/RashidKhanApDev.github.io/github-pages?style=for-the-badge&color=success&label=DEPLOYMENT\" alt=\"Deployment\"/> </div>",
   "main": "app.js",
   "scripts": {
-    "build:ts": "tsc",
+    "build:ts": "esbuild src/app.ts --bundle --minify --sourcemap --target=es2020 --outfile=dist/app.js",
     "build:scss": "sass src/style.scss dist/style.css --style compressed",
     "build": "concurrently \"npm run build:ts\" \"npm run build:scss\"",
-    "watch:ts": "tsc --watch",
+    "watch:ts": "esbuild src/app.ts --bundle --sourcemap --target=es2020 --outfile=dist/app.js --watch",
     "watch:scss": "sass --watch src/style.scss dist/style.css",
     "watch": "concurrently \"npm run watch:ts\" \"npm run watch:scss\""
   },
@@ -25,7 +25,13 @@
   "homepage": "https://github.com/RashidKhanApDev/RashidKhanApDev.github.io#readme",
   "devDependencies": {
     "concurrently": "^10.0.3",
+    "esbuild": "^0.28.0",
     "sass": "^1.100.0",
     "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@types/three": "^0.184.1",
+    "gsap": "^3.15.0",
+    "three": "^0.184.0"
   }
 }

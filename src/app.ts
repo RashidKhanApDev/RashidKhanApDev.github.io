@@ -1,3 +1,10 @@
+import './sounds.ts';
+import { initSpaceCanvas } from './space.ts';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 // ==================== TYPEWRITER EFFECT ====================
 const texts = ["Enterprise Web Apps.", "Secure Architectures.", "FastAPI Microservices.", "Modern UIs.", "Scalable Systems."];
 let count = 0;
@@ -35,6 +42,8 @@ function type() {
 
 // ==================== DOM CONTENT LOADED ====================
 document.addEventListener("DOMContentLoaded", function() {
+    initSpaceCanvas();
+
     // Aggressive AudioContext Unlock
     const audioEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
     const unlockAudio = function() {
@@ -50,6 +59,43 @@ document.addEventListener("DOMContentLoaded", function() {
 
     type();
 
+    // GSAP Cinematic Scroll Animations
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, i) => {
+        gsap.fromTo(card, 
+            { y: 100, opacity: 0, scale: 0.95 },
+            { 
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 1,
+                ease: "power4.out",
+                delay: i % 2 === 0 ? 0 : 0.2
+            }
+        );
+    });
+
+    const headers = document.querySelectorAll('h2.section-title');
+    headers.forEach(header => {
+        gsap.fromTo(header,
+            { x: -50, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: header,
+                    start: "top 80%"
+                },
+                x: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "back.out(1.7)"
+            }
+        );
+    });
     // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
