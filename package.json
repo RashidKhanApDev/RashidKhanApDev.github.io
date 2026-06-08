@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "build:ts": "esbuild src/app.ts --bundle --minify --sourcemap --target=es2020 --outfile=dist/app.js",
+    "build:analytics": "esbuild src/analytics.ts --bundle --minify --sourcemap --target=es2020 --outfile=dist/analytics.js",
     "build:scss": "sass src/style.scss dist/style.css --style compressed",
-    "build": "concurrently \"npm run build:ts\" \"npm run build:scss\"",
+    "build": "concurrently \"npm run build:ts\" \"npm run build:analytics\" \"npm run build:scss\"",
     "watch:ts": "esbuild src/app.ts --bundle --sourcemap --target=es2020 --outfile=dist/app.js --watch",
     "watch:scss": "sass --watch src/style.scss dist/style.css",
     "watch": "concurrently \"npm run watch:ts\" \"npm run watch:scss\""

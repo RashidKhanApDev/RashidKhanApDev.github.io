@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Visitor Intelligence</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #000; color: #fff; padding: 40px; margin: 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #111; padding: 20px; border-radius: 12px; border: 1px solid #333; }
+        h1 { color: #00FF41; margin-bottom: 30px; }
+        h2 { font-size: 18px; margin-top: 0; color: #888; }
+        .stat { font-size: 36px; font-weight: bold; }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        input[type="password"] { padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; outline: none; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div>
+            <h2>Admin Authentication Required</h2>
+            <input type="password" id="pass" placeholder="Enter PIN">
+        </div>
+    </div>
+
+    <h1>🚀 Intelligence Dashboard</h1>
+    
+    <div class="grid">
+        <div class="card">
+            <h2>Live Visitors</h2>
+            <div class="stat" id="live-visitors">0</div>
+        </div>
+        <div class="card">
+            <h2>Top Country</h2>
+            <div class="stat" id="top-country">-</div>
+        </div>
+        <div class="card">
+            <h2>Bot Attempts Blocked</h2>
+            <div class="stat" id="bot-blocks">0</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+        <h2>Recent Sessions</h2>
+        <ul id="sessions-list" style="list-style: none; padding: 0; line-height: 1.8;">
+            <li>Waiting for API connection...</li>
+        </ul>
+    </div>
+
+    <script>
+        // Simple security layer for static dashboard
+        document.getElementById('pass').addEventListener('keyup', function(e) {
+            // Replace with your actual PIN
+            if(e.target.value === '1234') { 
+                document.getElementById('auth-overlay').style.display = 'none';
+                loadData();
+            }
+        });
+
+        function loadData() {
+            // In a full production setup, this would fetch from a secure Cloudflare Worker endpoint
+            // e.g., fetch('https://analytics-api.YOUR_SUBDOMAIN.workers.dev/api/stats')
+            
+            // Mocking display for now since API requires D1 configuration
+            document.getElementById('live-visitors').innerText = '1'; // You are online!
+            document.getElementById('top-country').innerText = 'India';
+            document.getElementById('sessions-list').innerHTML = '<li>🟢 <b>New Visitor:</b> Chrome on Windows - 1920x1080 (Just now)</li>';
+        }
+    </script>
+</body>
+</html>
