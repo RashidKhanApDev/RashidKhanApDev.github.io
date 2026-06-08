@@ -68,7 +68,7 @@ class VisitorIntelligence {
             const payload = {
                 deviceOS: this.getDeviceOS(),
                 browser: this.getBrowser(),
-                screen: \`\${window.screen.width}x\${window.screen.height}\`,
+                screen: `${window.screen.width}x${window.screen.height}`,
                 referrer: document.referrer || null,
                 utm: this.getUTMParams(),
                 duration: duration,
