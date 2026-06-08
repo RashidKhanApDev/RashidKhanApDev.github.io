@@ -21,7 +21,7 @@ function type() {
         letter = currentText.slice(0, --index);
     } else {
         letter = currentText.slice(0, ++index);
-        if (window.playTypeSound) window.playTypeSound();
+        if (index <= 2 && window.playTypeSound) window.playTypeSound();
     }
 
     typewriterElement.textContent = letter;
@@ -106,9 +106,17 @@ document.addEventListener("DOMContentLoaded", function() {
         navLinks.classList.toggle('active');
     });
 
-    // Close menu when a link is clicked
-    navLinks.querySelectorAll('a').forEach(function(link) {
+    // Piano sound frequencies for pentatonic scale (C4, D4, E4, G4, A4, C5)
+    const pianoNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+
+    // Close menu when a link is clicked & play piano sound
+    navLinks.querySelectorAll('a').forEach(function(link, index) {
         link.addEventListener('click', function() {
+            if (window.playPianoSound) {
+                // Play a different note for each link
+                const note = pianoNotes[index % pianoNotes.length];
+                window.playPianoSound(note);
+            }
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
         });

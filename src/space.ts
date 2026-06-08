@@ -12,38 +12,43 @@ export function initSpaceCanvas() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 400;
 
-    // Create 3D particle system
+    // Create 3D particle system for realistic space
     const geometry = new THREE.BufferGeometry();
-    const particlesCount = 2000;
+    const particlesCount = 4000;
     const posArray = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 1000;
+        // Spherical distribution for deeper space feel
+        posArray[i] = (Math.random() - 0.5) * 1500;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
-    // Create a glowing circular texture for the particles
-    const createCircleTexture = () => {
+    // Create a glowing circular texture for the stars
+    const createStarTexture = () => {
         const canvas = document.createElement('canvas');
         canvas.width = 16;
         canvas.height = 16;
         const context = canvas.getContext('2d');
         if (context) {
-            context.beginPath();
-            context.arc(8, 8, 8, 0, 2 * Math.PI, false);
-            context.fillStyle = 'white';
-            context.fill();
+            const gradient = context.createRadialGradient(8, 8, 0, 8, 8, 8);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(0.2, 'rgba(210,230,255,0.8)');
+            gradient.addColorStop(0.5, 'rgba(100,150,255,0.2)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
+            
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 16, 16);
         }
         return new THREE.CanvasTexture(canvas);
     };
 
     const material = new THREE.PointsMaterial({
-        size: 2.5,
-        map: createCircleTexture(),
+        size: 2.0,
+        map: createStarTexture(),
         transparent: true,
-        opacity: 0.6,
-        color: 0x8b5cf6, // Elegant purple-blue accent for Apple luxury feel
+        opacity: 0.9,
+        color: 0xffffff,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
@@ -64,13 +69,13 @@ export function initSpaceCanvas() {
     const tick = () => {
         const elapsedTime = clock.getElapsedTime();
 
-        // Rotate particles slowly
-        particlesMesh.rotation.y = elapsedTime * 0.05;
-        particlesMesh.rotation.x = elapsedTime * 0.02;
+        // Realistic slow space drift instead of chaotic rotation
+        particlesMesh.rotation.y = elapsedTime * 0.005;
+        particlesMesh.rotation.x = elapsedTime * 0.002;
 
-        // Interactive physics based on mouse
-        camera.position.x += (mouseX * 200 - camera.position.x) * 0.05;
-        camera.position.y += (-mouseY * 200 - camera.position.y) * 0.05;
+        // Interactive subtle parallax based on mouse
+        camera.position.x += (mouseX * 50 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY * 50 - camera.position.y) * 0.05;
         camera.lookAt(scene.position);
 
         renderer.render(scene, camera);

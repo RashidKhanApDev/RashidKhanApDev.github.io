@@ -284,9 +284,75 @@
     osc.stop(ctx.currentTime + 0.001);
   };
 
+  // ── playPianoSound ─────────────────────────────────────────────────────
+  /**
+   * Premium Piano Sound for Navigation Links
+   *
+   * Design notes:
+   *   • Uses multiple oscillators (sine for fundamental, triangle for harmonics)
+   *   • Very fast attack (0.01s) and long exponential decay (1s) to mimic a piano string
+   *   • Lowpass filter removes harsh high frequencies for a warm tone
+   */
+  function playPianoSound(frequency) {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+    
+    // Default to C5 if no frequency provided
+    var freq = frequency || 523.25;
+
+    var now = ctx.currentTime;
+    
+    var masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0, now);
+    masterGain.gain.linearRampToValueAtTime(0.3, now + 0.01);
+    masterGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    
+    var filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 3000;
+    masterGain.connect(filter);
+    filter.connect(ctx.destination);
+
+    // Fundamental (Sine)
+    var osc1 = ctx.createOscillator();
+    osc1.type = 'sine';
+    osc1.frequency.value = freq;
+    var gain1 = ctx.createGain();
+    gain1.gain.value = 1.0;
+    osc1.connect(gain1);
+    gain1.connect(masterGain);
+
+    // First Harmonic (Triangle)
+    var osc2 = ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.value = freq * 2;
+    var gain2 = ctx.createGain();
+    gain2.gain.value = 0.3;
+    osc2.connect(gain2);
+    gain2.connect(masterGain);
+    
+    // Second Harmonic (Sine)
+    var osc3 = ctx.createOscillator();
+    osc3.type = 'sine';
+    osc3.frequency.value = freq * 3;
+    var gain3 = ctx.createGain();
+    gain3.gain.value = 0.1;
+    osc3.connect(gain3);
+    gain3.connect(masterGain);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc3.start(now);
+    
+    osc1.stop(now + 1.3);
+    osc2.stop(now + 1.3);
+    osc3.stop(now + 1.3);
+  }
+
   // ── Expose globally ───────────────────────────────────────────────────
   window.playClickSound = playClickSound;
   window.playTypeSound  = playTypeSound;
   window.playBootSound  = playBootSound;
+  window.playPianoSound = playPianoSound;
 
 })();
