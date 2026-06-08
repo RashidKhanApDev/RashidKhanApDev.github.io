@@ -46,7 +46,7 @@ class VisitorIntelligence {
             const duration = Math.floor((Date.now() - this.startTime) / 1000);
             
             // Record minimal session snapshot using rrweb if available
-            let sessionData = [];
+            let sessionData: any[] = [];
             if ((window as any).rrweb) {
                 (window as any).rrweb.record({
                     emit(event: any) {
