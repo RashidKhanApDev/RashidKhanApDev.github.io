@@ -21,7 +21,10 @@ function type() {
         letter = currentText.slice(0, --index);
     } else {
         letter = currentText.slice(0, ++index);
-        if (index <= 2 && window.playTypeSound) window.playTypeSound();
+        // Play continuous typing sound only for the first 2 phrases and if tab is active
+        if (count < 2 && !document.hidden && window.playTypeSound) {
+            window.playTypeSound();
+        }
     }
 
     typewriterElement.textContent = letter;

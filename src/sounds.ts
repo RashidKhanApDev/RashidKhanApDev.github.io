@@ -59,6 +59,7 @@
    *   • Master volume kept low (0.15) so it feels subtle, never jarring
    */
   function playClickSound() {
+    if (document.hidden) return;
     var ctx = getAudioContext();
     if (!ctx) return;
 
@@ -133,6 +134,7 @@
    *   • Very fast attack (2 ms) + exponential decay
    */
   function playTypeSound() {
+    if (document.hidden) return;
     var ctx = getAudioContext();
     if (!ctx) return;
 
@@ -202,6 +204,7 @@
    *   • Final chord for success/completion
    */
   function playBootSound() {
+    if (document.hidden) return;
     var ctx = getAudioContext();
     if (!ctx) return;
 
@@ -294,6 +297,7 @@
    *   • Lowpass filter removes harsh high frequencies for a warm tone
    */
   function playPianoSound(frequency) {
+    if (document.hidden) return;
     var ctx = getAudioContext();
     if (!ctx) return;
     
