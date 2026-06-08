@@ -14,6 +14,13 @@ let letter = "";
 let isDeleting = false;
 const typewriterElement = document.getElementById('typewriter');
 
+// Reset count when user comes back to the tab so sound plays twice again
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+        count = 0; // Play sound for the next two phrases again
+    }
+});
+
 function type() {
     currentText = texts[count % texts.length];
 
