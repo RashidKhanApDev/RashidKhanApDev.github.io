@@ -12,5 +12,4 @@ database_name = "visitor-db"
 database_id = "73d10a53-6166-49e5-a4ee-963401d267fb"
 
 [vars]
-TELEGRAM_BOT_TOKEN = "***REMOVED***"
 TELEGRAM_CHAT_ID = "620806780"
