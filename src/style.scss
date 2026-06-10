@@ -711,6 +711,12 @@ footer strong { color: var(--accent-color); }
 /* ==================== TILT CARD (Desktop) ==================== */
 .tilt-card { transition: transform 0.3s ease, box-shadow 0.3s; }
 
+/* ==================== RESPONSIVE - TABLETS & SMALL DESKTOPS ==================== */
+@media (max-width: 1024px) {
+  .nav-links { gap: 1rem; }
+  .glass-nav { padding: 1rem 2%; }
+}
+
 /* ==================== RESPONSIVE - TABLETS ==================== */
 @media (max-width: 768px) {
   .glass-nav { padding: 1rem 4%; flex-wrap: wrap; }

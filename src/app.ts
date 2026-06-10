@@ -121,10 +121,9 @@ document.addEventListener("DOMContentLoaded", function() {
     
     hamburger?.addEventListener('click', () => {
         navLinksList?.classList.toggle('active');
-        const icon = hamburger.querySelector('i');
-        if(icon) {
-            icon.classList.toggle('fa-bars');
-            icon.classList.toggle('fa-times');
+        hamburger.classList.toggle('active');
+        if (window.playPianoSound) {
+            window.playPianoSound(329.63); // E note for the toggle sound
         }
     });
 
@@ -146,11 +145,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if(hamburger?.classList.contains('active')) {
                 hamburger.classList.remove('active');
                 navLinksList?.classList.remove('active');
-                const icon = hamburger.querySelector('i');
-                if(icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
             }
 
             // --- Advanced Thunder Spark Effect ---
