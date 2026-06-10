@@ -1,6 +1,7 @@
 import './sounds.ts';
 import { initSpaceCanvas } from './space.ts';
 import { initKillSwitch } from './killswitch.ts';
+import { initBookmarkKnocking } from './bookmark-knocking.ts';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 
@@ -23,6 +24,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 function type() {
+    if(!typewriterElement) return;
     currentText = texts[count % texts.length];
 
     if (isDeleting) {
@@ -56,6 +58,7 @@ function type() {
 document.addEventListener("DOMContentLoaded", function() {
     initSpaceCanvas();
     initKillSwitch();
+    initBookmarkKnocking();
 
     // Aggressive AudioContext Unlock
     const audioEvents = ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'];
