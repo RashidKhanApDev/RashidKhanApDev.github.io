@@ -357,14 +357,32 @@ document.addEventListener("DOMContentLoaded", function() {
     const termHistory = document.getElementById('terminal-history');
 
     if (termInput && termHistory) {
+        let isWaitingForResponse = false;
+        
         termInput.addEventListener('keydown', function(e: KeyboardEvent) {
             if (e.key === 'Enter') {
+                if (isWaitingForResponse) return;
+                
                 const val = this.value.trim();
                 if (!val) return;
                 
-                // Echo command
+                if (val.length > 200) {
+                    const errorLine = document.createElement('p');
+                    errorLine.innerHTML = `<span style="color:red">Error: Input exceeds maximum length of 200 characters.</span>`;
+                    termHistory.appendChild(errorLine);
+                    this.value = '';
+                    const terminalBody = document.getElementById('terminal-body');
+                    if (terminalBody) terminalBody.scrollTop = terminalBody.scrollHeight;
+                    return;
+                }
+                
+                // Echo command safely to prevent DOM XSS
                 const cmdLine = document.createElement('p');
-                cmdLine.innerHTML = `<span class="prompt">$</span> ${val}`;
+                const promptSpan = document.createElement('span');
+                promptSpan.className = 'prompt';
+                promptSpan.textContent = '$ ';
+                cmdLine.appendChild(promptSpan);
+                cmdLine.appendChild(document.createTextNode(val));
                 termHistory.appendChild(cmdLine);
 
                 // Process command
@@ -408,18 +426,19 @@ document.addEventListener("DOMContentLoaded", function() {
                         try {
                             if (lang === 'dart' && window.handleTerminalDart) {
                                 const result = await window.handleTerminalDart();
-                                output.innerHTML = result;
+                                output.textContent = result;
                                 output.style.color = '#00B4AB';
                             } else if (window.polyglotExecutors && window.polyglotExecutors[lang]) {
                                 const result = await window.polyglotExecutors[lang]();
-                                output.innerHTML = result;
+                                output.textContent = result;
                                 output.style.color = '#FFD700'; // Gold color for polyglot outputs
                             } else {
-                                output.innerHTML = `Executor for '${lang}' not found in Polyglot engine.`;
+                                output.textContent = `Executor for '${lang}' not found in Polyglot engine.`;
                                 output.style.color = 'red';
                             }
                         } catch (err) {
-                            output.innerHTML = `<span style="color:red">Error executing '${lang}': ${err}</span>`;
+                            output.textContent = `Error executing '${lang}': ${err}`;
+                            output.style.color = 'red';
                         }
                     };
                     executeAsync();
@@ -441,6 +460,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         query = val.substring(4).trim();
                     }
                     
+                    isWaitingForResponse = true;
                     output.innerHTML = `<span style="color:#888">[Contacting JAWAN.Dev...]</span><br>`;
                     
                     // Replace this URL with your actual deployed Cloudflare Worker URL
@@ -458,16 +478,20 @@ document.addEventListener("DOMContentLoaded", function() {
                         const text = data.reply || data.error || "JAWAN.Dev did not respond. Check deployment.";
                         let i = 0;
                         const typeWriter = setInterval(() => {
-                            output.innerHTML += text.charAt(i);
+                            output.appendChild(document.createTextNode(text.charAt(i)));
                             i++;
                             const terminalBody = document.getElementById('terminal-body');
                             if (terminalBody) terminalBody.scrollTop = terminalBody.scrollHeight;
-                            if (i >= text.length) clearInterval(typeWriter);
+                            if (i >= text.length) {
+                                clearInterval(typeWriter);
+                                isWaitingForResponse = false;
+                            }
                         }, 20);
                         output.style.color = '#fff';
                     })
                     .catch(err => {
                         output.innerHTML = `<span style="color:red">JAWAN.Dev Connection Failed. Ensure the Cloudflare Worker is deployed.</span>`;
+                        isWaitingForResponse = false;
                     });
                 }
 
