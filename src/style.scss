@@ -363,6 +363,24 @@ body {
 }
 
 .bio { font-size: 1.1rem; color: #94a3b8; margin: 1.5rem 0 2.5rem; line-height: 1.8; }
+
+.premium-bio {
+  font-size: 1.15rem;
+  max-width: 620px;
+  margin: 1.5rem auto 2.5rem auto;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  background: linear-gradient(90deg, #e2e8f0, #94a3b8, #e2e8f0);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientText 6s linear infinite;
+}
+
+@media (max-width: 768px) {
+  .desktop-br { display: none; }
+}
 .social-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 
 .social-btn {
