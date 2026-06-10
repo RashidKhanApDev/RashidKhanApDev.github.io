@@ -128,47 +128,79 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Premium Articles Button Animation
-    const btnArticles = document.getElementById('btnArticles');
-    const btnNavArticles = document.getElementById('btnNavArticles');
-    
-    const animateArticlesBtn = (btn: HTMLElement | null) => {
-        if (!btn) return;
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetUrl = btn.getAttribute('href');
-            
-            // GSAP Burst Animation
-            gsap.to(btn, {
-                scale: 1.2,
-                boxShadow: "0 0 40px #38bdf8",
-                duration: 0.2,
-                yoyo: true,
-                repeat: 1,
-                ease: "power2.out",
-                onComplete: () => {
-                    if(targetUrl) window.location.href = targetUrl;
-                }
-            });
-        });
-    };
-
-    animateArticlesBtn(btnArticles);
-    animateArticlesBtn(btnNavArticles);
-
-    // Piano sound frequencies for pentatonic scale (C4, D4, E4, G4, A4, C5)
+    // ==================== ADVANCED THUNDER SPARK GSAP ANIMATION ====================
     const pianoNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
 
-    // Close menu when a link is clicked & play piano sound
     navLinksList?.querySelectorAll('a').forEach(function(link, index) {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetUrl = link.getAttribute('href');
+            
+            // Play Piano Note
             if (window.playPianoSound) {
-                // Play a different note for each link
                 const note = pianoNotes[index % pianoNotes.length];
                 window.playPianoSound(note);
             }
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
+
+            // Close Mobile Menu if open
+            if(hamburger?.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinksList?.classList.remove('active');
+                const icon = hamburger.querySelector('i');
+                if(icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+
+            // --- Advanced Thunder Spark Effect ---
+            // Create the spark element
+            const rect = link.getBoundingClientRect();
+            const spark = document.createElement('div');
+            spark.style.position = 'absolute';
+            spark.style.left = `${e.clientX - rect.left}px`;
+            spark.style.top = `${e.clientY - rect.top}px`;
+            spark.style.width = '10px';
+            spark.style.height = '10px';
+            spark.style.background = 'white';
+            spark.style.borderRadius = '50%';
+            spark.style.pointerEvents = 'none';
+            spark.style.zIndex = '0';
+            spark.style.boxShadow = '0 0 20px 10px #fff, 0 0 40px 20px #38bdf8, 0 0 60px 30px #2563eb';
+            spark.style.transform = 'translate(-50%, -50%)';
+            link.appendChild(spark);
+
+            // Button Burst Glow
+            gsap.to(link, {
+                scale: 1.1,
+                boxShadow: "0 0 50px rgba(56, 189, 248, 0.8)",
+                duration: 0.1,
+                yoyo: true,
+                repeat: 1,
+                ease: "power4.out"
+            });
+
+            // Thunder Spark Animation
+            gsap.to(spark, {
+                scale: 20,
+                opacity: 0,
+                duration: 0.5,
+                ease: "power2.out",
+                onComplete: () => {
+                    spark.remove();
+                    // Navigate
+                    if (targetUrl) {
+                        if (targetUrl.startsWith('#')) {
+                            const targetSection = document.querySelector(targetUrl);
+                            if (targetSection) {
+                                targetSection.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        } else {
+                            window.location.href = targetUrl;
+                        }
+                    }
+                }
+            });
         });
     });
 

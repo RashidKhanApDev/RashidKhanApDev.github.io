@@ -119,6 +119,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  overflow: hidden;
 }
 
 .nav-links a::after {
