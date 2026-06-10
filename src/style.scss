@@ -110,23 +110,62 @@ body {
   color: var(--fg-color);
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .nav-links a::after {
   content: '';
   position: absolute;
-  bottom: -4px; left: 0;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
   width: 0; height: 2px;
   background: var(--accent-color);
-  transition: width 0.3s;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 2px 2px 0 0;
+}
+
+.nav-links a:hover {
+  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.nav-links a.active {
+  color: var(--accent-color);
+  background: rgba(56, 189, 248, 0.05);
+  border-color: rgba(56, 189, 248, 0.1);
 }
 
 .nav-links a:hover::after,
-.nav-links a.active::after { width: 100%; }
-.nav-links a:hover { color: var(--accent-hover); }
-.nav-links a.active { color: var(--accent-color); }
+.nav-links a.active::after { width: 40%; } /* Subtle centralized underline */
+
+/* Premium CTA Button for Top Nav */
+.nav-cta {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.8), rgba(37, 99, 235, 0.8)) !important;
+  color: #fff !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3) !important;
+  padding: 0.5rem 1.2rem !important;
+  border-radius: 20px !important;
+}
+
+.nav-cta::after { display: none !important; }
+
+.nav-cta:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5) !important;
+  border-color: #38bdf8 !important;
+}
 
 /* Hamburger */
 .hamburger {

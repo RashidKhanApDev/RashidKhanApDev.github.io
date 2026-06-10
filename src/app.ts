@@ -130,13 +130,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Premium Articles Button Animation
     const btnArticles = document.getElementById('btnArticles');
-    if (btnArticles) {
-        btnArticles.addEventListener('click', (e) => {
+    const btnNavArticles = document.getElementById('btnNavArticles');
+    
+    const animateArticlesBtn = (btn: HTMLElement | null) => {
+        if (!btn) return;
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const targetUrl = btnArticles.getAttribute('href');
+            const targetUrl = btn.getAttribute('href');
             
             // GSAP Burst Animation
-            gsap.to(btnArticles, {
+            gsap.to(btn, {
                 scale: 1.2,
                 boxShadow: "0 0 40px #38bdf8",
                 duration: 0.2,
@@ -148,7 +151,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
         });
-    }
+    };
+
+    animateArticlesBtn(btnArticles);
+    animateArticlesBtn(btnNavArticles);
 
     // Piano sound frequencies for pentatonic scale (C4, D4, E4, G4, A4, C5)
     const pianoNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
