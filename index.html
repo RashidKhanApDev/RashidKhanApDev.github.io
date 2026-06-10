@@ -27,12 +27,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="dist/style.css">
     
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https://github.com https://avatars.githubusercontent.com; media-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
     <!-- Dependencies: GSAP and html2pdf -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
 </head>
 <body>
     <!-- Magnetic Custom Cursor -->
@@ -71,7 +76,7 @@
             
             <!-- Premium Instagram Avatar -->
             <div class="profile-avatar-container">
-                <a href="https://instagram.com/rashidkhanap" target="_blank" class="avatar-ring" aria-label="Instagram Profile">
+                <a href="https://instagram.com/rashidkhanap" target="_blank" rel="noopener noreferrer" class="avatar-ring" aria-label="Instagram Profile">
                     <img src="https://github.com/RashidKhanApDev.png" alt="Rashid Khan Ap" class="profile-avatar">
                     <div class="ig-badge">
                         <i class="fab fa-instagram"></i>
@@ -83,9 +88,9 @@
             <p>⚔️ Be a warrior, not a worrier ⚔️</p>
             <p class="bio premium-bio">A passionate self-taught Full-Stack Developer from India.<br>I transform complex problems into elegant, modern, and highly scalable web applications.</p>
             <div class="social-links">
-                <a href="https://github.com/RashidKhanApDev" target="_blank" class="social-btn"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://github.com/RashidKhanApDev" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fab fa-github"></i> GitHub</a>
                 <a href="mailto:mr.rashidkhanap@outlook.com" class="social-btn"><i class="fas fa-envelope"></i> Email</a>
-                <a href="https://rashidkhanapblog.blogspot.com/" target="_blank" class="social-btn"><i class="fas fa-blog"></i> Blog</a>
+                <a href="https://rashidkhanapblog.blogspot.com/" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fas fa-blog"></i> Blog</a>
             </div>
         </div>
     </header>
@@ -194,7 +199,7 @@
             <div class="project-card glass-panel fade-in tilt-card">
                 <div class="project-header">
                     <h3>🎬 Universal Media Downloader</h3>
-                    <a href="https://github.com/RashidKhanApDev/UniversalMediaDownloader" aria-label="Universal Media Downloader GitHub Repository" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://github.com/RashidKhanApDev/UniversalMediaDownloader" aria-label="Universal Media Downloader GitHub Repository" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                 </div>
                 <p>A cross-platform high-performance web application utilizing yt-dlp and FFmpeg to merge and download media seamlessly.</p>
                 <div class="tags">
@@ -207,7 +212,7 @@
             <div class="project-card glass-panel fade-in tilt-card">
                 <div class="project-header">
                     <h3>🗳️ PollVoteX</h3>
-                    <a href="https://github.com/RashidKhanApDev/PollVoteX" aria-label="PollVoteX GitHub Repository" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://github.com/RashidKhanApDev/PollVoteX" aria-label="PollVoteX GitHub Repository" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                 </div>
                 <p>A powerful, secure, and highly efficient online voting web application built for conducting multi-category elections in real-time.</p>
                 <div class="tags">
@@ -220,7 +225,7 @@
             <div class="project-card glass-panel fade-in tilt-card">
                 <div class="project-header">
                     <h3>🔒 SecURL</h3>
-                    <a href="https://github.com/RashidKhanApDev/SecURL" aria-label="SecURL GitHub Repository" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://github.com/RashidKhanApDev/SecURL" aria-label="SecURL GitHub Repository" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                 </div>
                 <p>An innovative cybersecurity tool that encrypts URLs and adds military-grade password protection using AES-GCM client-side encryption.</p>
                 <div class="tags">
@@ -242,12 +247,12 @@
                 <h3>Email</h3>
                 <p>mr.rashidkhanap@outlook.com</p>
             </a>
-            <a href="https://github.com/RashidKhanApDev" target="_blank" class="contact-card glass-panel fade-in">
+            <a href="https://github.com/RashidKhanApDev" target="_blank" rel="noopener noreferrer" class="contact-card glass-panel fade-in">
                 <i class="fab fa-github"></i>
                 <h3>GitHub</h3>
-                <p>@RashidKhanApDev</p>
+                <p>Check out my repos</p>
             </a>
-            <a href="https://rashidkhanapblog.blogspot.com/" target="_blank" class="contact-card glass-panel fade-in">
+            <a href="https://rashidkhanapblog.blogspot.com/" target="_blank" rel="noopener noreferrer" class="contact-card glass-panel fade-in">
                 <i class="fas fa-blog"></i>
                 <h3>Blog</h3>
                 <p>rashidkhanapblog</p>
