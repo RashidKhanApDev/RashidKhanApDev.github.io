@@ -435,7 +435,40 @@ document.addEventListener("DOMContentLoaded", function() {
                     output.innerHTML = 'nice try. This incident will be reported.';
                     output.style.color = 'red';
                 } else {
-                    output.innerHTML = `bash: ${val}: command not found`;
+                    // JAWAN.Dev Integration
+                    let query = val;
+                    if (cmd.startsWith('ask ')) {
+                        query = val.substring(4).trim();
+                    }
+                    
+                    output.innerHTML = `<span style="color:#888">[Contacting JAWAN.Dev...]</span><br>`;
+                    
+                    // Replace this URL with your actual deployed Cloudflare Worker URL
+                    const workerUrl = "https://ai-terminal.rashidkhanapdev.workers.dev/"; 
+                    
+                    fetch(workerUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: query })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        output.innerHTML = '';
+                        // Typewriter effect
+                        const text = data.reply || data.error || "JAWAN.Dev did not respond. Check deployment.";
+                        let i = 0;
+                        const typeWriter = setInterval(() => {
+                            output.innerHTML += text.charAt(i);
+                            i++;
+                            const terminalBody = document.getElementById('terminal-body');
+                            if (terminalBody) terminalBody.scrollTop = terminalBody.scrollHeight;
+                            if (i >= text.length) clearInterval(typeWriter);
+                        }, 20);
+                        output.style.color = '#fff';
+                    })
+                    .catch(err => {
+                        output.innerHTML = `<span style="color:red">JAWAN.Dev Connection Failed. Ensure the Cloudflare Worker is deployed.</span>`;
+                    });
                 }
 
                 if (cmd !== 'clear') {
