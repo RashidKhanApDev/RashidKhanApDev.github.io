@@ -378,9 +378,6 @@ body {
   animation: gradientText 6s linear infinite;
 }
 
-@media (max-width: 768px) {
-  .desktop-br { display: none; }
-}
 .social-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 
 .social-btn {
