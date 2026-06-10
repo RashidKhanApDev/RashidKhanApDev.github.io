@@ -117,19 +117,44 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
-
-    hamburger.addEventListener('click', function() {
-        if (window.playClickSound) window.playClickSound();
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
+    const navLinksList = document.querySelector('.nav-links');
+    
+    hamburger?.addEventListener('click', () => {
+        navLinksList?.classList.toggle('active');
+        const icon = hamburger.querySelector('i');
+        if(icon) {
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        }
     });
+
+    // Premium Articles Button Animation
+    const btnArticles = document.getElementById('btnArticles');
+    if (btnArticles) {
+        btnArticles.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetUrl = btnArticles.getAttribute('href');
+            
+            // GSAP Burst Animation
+            gsap.to(btnArticles, {
+                scale: 1.2,
+                boxShadow: "0 0 40px #38bdf8",
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1,
+                ease: "power2.out",
+                onComplete: () => {
+                    if(targetUrl) window.location.href = targetUrl;
+                }
+            });
+        });
+    }
 
     // Piano sound frequencies for pentatonic scale (C4, D4, E4, G4, A4, C5)
     const pianoNotes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
 
     // Close menu when a link is clicked & play piano sound
-    navLinks.querySelectorAll('a').forEach(function(link, index) {
+    navLinksList?.querySelectorAll('a').forEach(function(link, index) {
         link.addEventListener('click', function() {
             if (window.playPianoSound) {
                 // Play a different note for each link
