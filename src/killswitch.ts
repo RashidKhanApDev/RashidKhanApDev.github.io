@@ -31,9 +31,9 @@ export function initKillSwitch() {
         }
     };
 
-    // Check immediately, then every 5 seconds
+    // Check immediately, then every 30 seconds (reduced from 5s to prevent API overload)
     checkStatus();
-    setInterval(checkStatus, 5000);
+    setInterval(checkStatus, 30000);
 }
 
 function initiateLockdown(title: string, subtitle: string) {

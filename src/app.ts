@@ -69,11 +69,15 @@ document.addEventListener("DOMContentLoaded", function() {
         document.addEventListener(event, unlockAudio, { once: true, passive: true });
     });
 
+    let audioIntervalCount = 0;
     const audioInterval = setInterval(() => {
+        audioIntervalCount++;
         if (window.initAudioContext) {
             window.initAudioContext();
             clearInterval(audioInterval);
         }
+        // Stop trying after 10 seconds to prevent memory leak
+        if (audioIntervalCount > 100) clearInterval(audioInterval);
     }, 100);
 
     type();
@@ -201,16 +205,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // ==================== SCROLL PROGRESS BAR ====================
+    const scrollProgressEl = document.getElementById('scrollProgress');
     window.addEventListener('scroll', function() {
+        if (!scrollProgressEl) return;
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrollPercent = (scrollTop / scrollHeight) * 100;
-        document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+        const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        scrollProgressEl.style.width = scrollPercent + '%';
     });
 
     // ==================== NAV SCROLL EFFECT ====================
     const nav = document.querySelector('.glass-nav');
     window.addEventListener('scroll', function() {
+        if (!nav) return;
         if (window.scrollY > 50) {
             nav.classList.add('scrolled');
         } else {
@@ -243,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const backToTop = document.getElementById('backToTop');
 
     window.addEventListener('scroll', function() {
+        if (!backToTop) return;
         if (window.scrollY > 400) {
             backToTop.classList.add('visible');
         } else {
@@ -250,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    backToTop.addEventListener('click', function() {
+    backToTop?.addEventListener('click', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
@@ -316,7 +324,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (window.innerWidth > 768) {
         const tiltCards = document.querySelectorAll('.tilt-card');
         tiltCards.forEach(function(card) {
-            card.addEventListener('mousemove', function(e: any) {
+            card.addEventListener('mousemove', function(e: MouseEvent) {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
