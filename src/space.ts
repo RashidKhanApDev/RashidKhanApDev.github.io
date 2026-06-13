@@ -25,7 +25,12 @@ export function initSpaceCanvas() {
     
     isInitialized = true;
 
-    renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    try {
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    } catch (error) {
+        console.warn("WebGL not supported, skipping 3D background initialization.", error);
+        return;
+    }
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
 
